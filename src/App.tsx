@@ -1,117 +1,112 @@
 import React, { useState } from 'react';
-import { CheckCircle2, ChevronRight, BookOpen, AlertCircle, Clock, Search } from 'lucide-react';
 
-const Handbook = () => {
-  const [activeTab, setActiveTab] = useState('all');
+function App() {
+  const [page, setPage] = useState('cover');
+  const [checks, setChecks] = useState<{ [key: string]: boolean }>({});
 
-  const categories = [
-    { id: 'all', name: 'すべて', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'urgent', name: '至急', icon: <AlertCircle className="w-4 h-4" /> },
-    { id: 'daily', name: '日常', icon: <Clock className="w-4 h-4" /> },
-  ];
+  const toggleCheck = (id: string) => {
+    setChecks(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  const items = [
-    {
-      id: 1,
-      title: "朝の開館準備",
-      category: "urgent",
-      time: "08:30 - 09:00",
-      tasks: ["メインゲートの解錠", "照明・空調の点検", "レジ金の確認"],
-      status: "important"
-    },
-    {
-      id: 2,
-      title: "清掃ルーティン",
-      category: "daily",
-      time: "10:00 - 11:00",
-      tasks: ["フロアのモップ掛け", "ゴミ箱の回収", "備品の補充"],
-      status: "normal"
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-yellow-50 font-sans text-slate-900">
-      <header className="bg-yellow-400 p-6 shadow-md border-b-4 border-yellow-500">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-black flex items-center gap-2 italic tracking-wider">
-            <BookOpen className="w-8 h-8" />
-            緊急アンテナBOOK(職員向け)
-          </h1>
-          <p className="mt-1 text-sm font-bold text-yellow-900 opacity-80">
-            今日のミッションを確認して、最高の1日にしよう！
-          </p>
-        </div>
-      </header>
-
-      <main className="max-w-md mx-auto p-4 pb-20">
-        <div className="relative mb-6">
-          <input 
-            type="text" 
-            placeholder="何かお探しですか？" 
-            className="w-full p-4 pl-12 rounded-2xl bg-white border-2 border-yellow-200 shadow-sm focus:outline-none focus:border-yellow-400 transition-all font-medium"
-          />
-          <Search className="absolute left-4 top-4 text-yellow-400 w-6 h-6" />
-        </div>
-
-        <div className="flex gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-          {categories.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveTab(cat.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold whitespace-nowrap transition-all shadow-sm ${
-                activeTab === cat.id 
-                  ? 'bg-slate-900 text-yellow-400 scale-105' 
-                  : 'bg-white text-slate-600 hover:bg-yellow-100 border-2 border-yellow-100'
-              }`}
-            >
-              {cat.icon}
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-6">
-          {items.map(item => (
-            <div key={item.id} className="group relative bg-white p-6 rounded-3xl shadow-sm hover:shadow-xl transition-all border-2 border-yellow-100 overflow-hidden active:scale-95">
-              <div className={`absolute top-0 left-0 w-2 h-full ${item.category === 'urgent' ? 'bg-red-400' : 'bg-blue-400'}`} />
-              
-              <div className="flex justify-between items-start mb-4 pl-2">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-tighter ${
-                      item.category === 'urgent' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
-                    }`}>
-                      {item.category}
-                    </span>
-                    <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {item.time}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-black text-slate-800">{item.title}</h3>
-                </div>
-                <ChevronRight className="text-yellow-400 group-hover:translate-x-1 transition-transform" />
-              </div>
-
-              <div className="space-y-2 pl-2">
-                {item.tasks.map((task, idx) => (
-                  <div key={idx} className="flex items-center gap-3 text-sm font-bold text-slate-600 group/item">
-                    <div className="w-5 h-5 rounded-md border-2 border-yellow-200 flex items-center justify-center group-hover/item:bg-yellow-400 transition-colors">
-                      <CheckCircle2 className="w-3 h-3 text-transparent group-hover/item:text-white" />
-                    </div>
-                    {task}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-
-      <button className="fixed bottom-6 right-6 w-16 h-16 bg-slate-900 rounded-full shadow-2xl flex items-center justify-center text-yellow-400 active:scale-90 transition-transform border-4 border-yellow-400">
-        <span className="text-3xl font-bold">+</span>
-      </button>
+  const Container = ({ children, bg }: { children: React.ReactNode, bg: string }) => (
+    <div style={{ backgroundColor: bg, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '20px' }}>
+      <div style={{ width: '100%', maxWidth: '400px', fontFamily: 'sans-serif' }}>
+        {children}
+      </div>
     </div>
   );
-};
 
-export default Handbook;
+  const CheckItem = ({ id, text }: { id: string, text: string }) => (
+    <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }}>
+      <input type="checkbox" checked={!!checks[id]} onChange={() => toggleCheck(id)} style={{ width: '22px', height: '22px', accentColor: '#f43f5e' }} />
+      <span style={{ fontSize: '14px', color: checks[id] ? '#cbd5e1' : '#475569', textDecoration: checks[id] ? 'line-through' : 'none' }}>{text}</span>
+    </label>
+  );
+
+  // --- 1. 表紙 ---
+  if (page === 'cover') {
+    return (
+      <Container bg="#fbbf24">
+        <div style={{ backgroundColor: 'white', padding: '40px 20px', borderRadius: '40px', textAlign: 'center', marginTop: '40px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+          <p style={{ color: '#666', fontWeight: 'bold', fontSize: '14px' }}>アテンダント用</p>
+          <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#1a1a1a', margin: '10px 0' }}>緊急対応 アンテナBOOK</h1>
+          <div style={{ fontSize: '80px', margin: '20px 0' }}>📢</div>
+          <div style={{ backgroundColor: '#fef3c7', padding: '15px', borderRadius: '20px', marginBottom: '30px', border: '2px solid #fcd34d' }}>
+            <p style={{ fontSize: '18px', fontWeight: '900', margin: '0 0 5px 0' }}>「落ちついて〜」</p>
+            <p style={{ fontWeight: 'bold', color: '#444', fontSize: '14px' }}>まずは、自分の身の安全</p>
+          </div>
+          <button onClick={() => setPage('menu')} style={{ width: '100%', backgroundColor: '#1a1a1a', color: 'white', padding: '18px', borderRadius: '15px', fontSize: '18px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>本を開く 📖</button>
+        </div>
+      </Container>
+    );
+  }
+
+  // --- 2. もくじ (全14項目) ---
+  if (page === 'menu') {
+    const menuItems = [
+      { id: 'check', title: '1 今すぐチェック', p: '1' },
+      { id: '2', title: '2 災害対応の考え方', p: '2' },
+      { id: '3', title: '3 災害発生時の対応', p: '3' },
+      { id: '4', title: '4 対応フロー<移動中等>', p: '4.5' },
+      { id: '5', title: '5 対応フロー<在宅介護中>', p: '6.7' },
+      { id: '6', title: '6 対応フロー<休日等>', p: '8.9' },
+      { id: '7', title: '7 情報連絡体制', p: '10' },
+      { id: '8', title: '8 安否確認で伝える事項', p: '11' },
+      { id: '9', title: '9 緊急連絡先一覧', p: '12' },
+      { id: '10', title: '10 職員の帰宅・参集基準', p: '13' },
+      { id: '11', title: '11 帰宅完了の報告', p: '14' },
+      { id: '12', title: '12 災害時準備品', p: '15' },
+      { id: '13', title: '13 本人情報', p: '16' },
+      { id: '14', title: '14 MEMO', p: '17' },
+    ];
+
+    return (
+      <Container bg="#f8fafc">
+        <div style={{ paddingTop: '20px', paddingBottom: '40px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: '900', borderBottom: '4px solid #fbbf24', paddingBottom: '10px' }}>- もくじ -</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+            {menuItems.map((item) => (
+              <button 
+                key={item.id}
+                onClick={() => item.id === 'check' ? setPage('check') : alert('このページは現在作成中です！')}
+                style={{ textAlign: 'left', padding: '15px', borderRadius: '12px', backgroundColor: item.id === 'check' ? 'white' : '#f1f5f9', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', cursor: 'pointer', opacity: item.id === 'check' ? 1 : 0.7 }}
+              >
+                <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#334155' }}>{item.title}</span>
+                <span style={{ color: '#94a3b8', fontSize: '11px' }}>P.{item.p}</span>
+              </button>
+            ))}
+          </div>
+          <button onClick={() => setPage('cover')} style={{ marginTop: '30px', border: 'none', background: 'none', color: '#94a3b8', fontWeight: 'bold', width: '100%' }}>🏠 表紙に戻る</button>
+        </div>
+      </Container>
+    );
+  }
+
+  // --- 3. 今すぐチェック ---
+  return (
+    <Container bg="#f8fafc">
+      <div style={{ backgroundColor: '#f43f5e', color: 'white', padding: '25px 20px', borderRadius: '0 0 30px 30px', margin: '-20px -20px 25px -20px' }}>
+        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '900' }}>① 今すぐチェック</h2>
+        <p style={{ fontSize: '12px', marginTop: '5px', opacity: 0.9 }}>ハザードマップの確認等をしましょう</p>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', paddingBottom: '40px' }}>
+        <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '25px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+          <h3 style={{ color: '#92400e', margin: '0 0 10px 0', fontSize: '16px' }}>🚨 地震災害への備え</h3>
+          <CheckItem id="eq1" text="寝室・居間に高い家具は置いていないか" />
+          <CheckItem id="eq2" text="最低限の備蓄(水・コンロ・カイロ)" />
+          <CheckItem id="eq3" text="簡易トイレ(1日1人5~7回分)" />
+          <CheckItem id="eq4" text="予備バッテリー・LEDランタン" />
+        </div>
+        <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '25px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+          <h3 style={{ color: '#1e40af', margin: '0 0 10px 0', fontSize: '16px' }}>🌊 水害への備え</h3>
+          <CheckItem id="fl1" text="3m以上：警戒レベル3・4で必ず避難" />
+          <CheckItem id="fl2" text="30cm~3m：屋外避難(無理なら2階以上)" />
+          <CheckItem id="fl3" text="30cm以下：自宅待機・断水等に備える" />
+        </div>
+        <button onClick={() => setPage('menu')} style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '1px solid #e2e8f0', background: 'white', fontWeight: 'bold', color: '#94a3b8' }}>⬅️ もくじに戻る</button>
+      </div>
+    </Container>
+  );
+}
+
+export default App;
