@@ -35,7 +35,7 @@ const Handbook = () => {
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl font-black flex items-center gap-2 italic tracking-wider">
             <BookOpen className="w-8 h-8" />
-            今すぐチェックしておこう
+            緊急アンテナBOOK(職員向け)
           </h1>
           <p className="mt-1 text-sm font-bold text-yellow-900 opacity-80">
             今日のミッションを確認して、最高の1日にしよう！
